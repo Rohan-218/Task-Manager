@@ -1,7 +1,9 @@
 const express = require('express');
 const taskRouter = require("./routes/task.routes");
+const logger = require('morgan');
 const app = express();
 
+app.use(logger('dev'));
 app.use(express.json());
 
 app.get('/', (req, res) => {

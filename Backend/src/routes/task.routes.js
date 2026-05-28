@@ -12,4 +12,7 @@ router.get("/", taskController.getTasksController);
 /** @route PUT /api/tasks/:id */
 router.put("/:id", taskController.updateTaskController);
 
+/** @route DELETE /api/tasks/:id */
+router.delete("/:id", taskController.deleteTaskController);
+
 module.exports = router;

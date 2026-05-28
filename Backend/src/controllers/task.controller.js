@@ -31,7 +31,7 @@ async function createTaskController(req, res) {
 
 async function getTasksController(req, res) {
     try {
-        const tasks = await taskModel.find().sort({ createdAt: 1 });
+        const tasks = await taskModel.find().sort({ updatedAt: -1 });
         return res.status(200).json({
             tasks: tasks.map(task => ({
                 _id: task._id,
@@ -54,7 +54,7 @@ async function updateTaskController(req, res) {
         const task = await taskModel.findByIdAndUpdate(
             id,
             { title, description },
-            { new: true }
+            { returnDocument: 'after' }
         );
 
         if (!task) {
@@ -75,8 +75,32 @@ async function updateTaskController(req, res) {
     }
 };
 
+async function deleteTaskController(req, res) {
+    try {
+        const { id } = req.params;
+        const task = await taskModel.findByIdAndDelete(id);
+
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        return res.status(200).json({
+            task: {
+                _id: task._id,
+                title: task.title,
+                description: task.description
+            },
+            message: "Task deleted successfully",
+            success: true
+        });
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+};
+
 module.exports = {
     createTaskController,
     getTasksController,
-    updateTaskController
+    updateTaskController,
+    deleteTaskController
 };
