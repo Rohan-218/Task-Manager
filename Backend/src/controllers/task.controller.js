@@ -46,7 +46,37 @@ async function getTasksController(req, res) {
     }
 };
 
+async function updateTaskController(req, res) {
+    try {
+        const { id } = req.params;
+        const { title, description } = req.body;    
+
+        const task = await taskModel.findByIdAndUpdate(
+            id,
+            { title, description },
+            { new: true }
+        );
+
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        return res.status(200).json({
+            task: {
+                _id: task._id,
+                title: task.title,
+                description: task.description
+            },
+            message: "Task updated successfully",
+            success: true
+        });
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+};
+
 module.exports = {
     createTaskController,
-    getTasksController
+    getTasksController,
+    updateTaskController
 };
