@@ -11,6 +11,13 @@ app.get('/', (req, res) => {
     });
 });
 
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        message: 'API is healthy',
+        status: 'success'
+    });
+});
+
 app.use("/api/tasks", taskRouter);
 
 module.exports = app;
