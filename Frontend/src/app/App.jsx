@@ -3,35 +3,51 @@ import { useState } from 'react'
 
 function App() {
 
-  const [taskInput, setTaskInput] = useState('')
+  const [titleInput, setTitleInput] = useState('')
+  const [descriptionInput, setDescriptionInput] = useState('')
   const [search, setSearch] = useState('')
 
   const [tasks, setTasks] = useState([
-    { text: 'Learn React', completed: false },
-    { text: 'Build Backend', completed: true }
+    {
+      title: 'Learn React',
+      description: 'Practice hooks and components',
+      status: 'pending'
+    },
+    {
+      title: 'Build Backend',
+      description: 'Create Express APIs',
+      status: 'completed'
+    }
   ])
 
   const addTask = () => {
 
-    if (taskInput.trim() === '') return
+    if (
+      titleInput.trim() === '' ||
+      descriptionInput.trim() === ''
+    ) return
 
     setTasks([
       ...tasks,
       {
-        text: taskInput,
-        completed: false
+        title: titleInput,
+        description: descriptionInput,
+        status: 'pending'
       }
     ])
 
-    setTaskInput('')
+    setTitleInput('')
+    setDescriptionInput('')
   }
 
   const toggleTask = (index) => {
 
     const updatedTasks = [...tasks]
 
-    updatedTasks[index].completed =
-      !updatedTasks[index].completed
+    updatedTasks[index].status =
+      updatedTasks[index].status === 'completed'
+        ? 'pending'
+        : 'completed'
 
     setTasks(updatedTasks)
   }
@@ -46,7 +62,7 @@ function App() {
   }
 
   const filteredTasks = tasks.filter((task) =>
-    task.text.toLowerCase().includes(search.toLowerCase())
+    task.title.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -80,17 +96,27 @@ function App() {
 
                 <input
                   type="checkbox"
-                  checked={task.completed}
+                  checked={task.status === 'completed'}
                   onChange={() => toggleTask(index)}
                 />
 
-                <span
-                  className={
-                    task.completed ? 'completed-task' : ''
-                  }
-                >
-                  {task.text}
-                </span>
+                <div>
+
+                  <h3
+                    className={
+                      task.status === 'completed'
+                        ? 'completed-task'
+                        : ''
+                    }
+                  >
+                    {task.title}
+                  </h3>
+
+                  <p>
+                    {task.description}
+                  </p>
+
+                </div>
 
               </div>
 
@@ -111,9 +137,23 @@ function App() {
 
           <input
             type="text"
-            placeholder="Write a task..."
-            value={taskInput}
-            onChange={(e) => setTaskInput(e.target.value)}
+            placeholder="Task title..."
+            value={titleInput}
+            onChange={(e) => setTitleInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                document.getElementById('descriptionInput').focus()
+              }
+            }}
+            className="task-input"
+          />
+
+          <input
+            id="descriptionInput"
+            type="text"
+            placeholder="Task description..."
+            value={descriptionInput}
+            onChange={(e) => setDescriptionInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 addTask()

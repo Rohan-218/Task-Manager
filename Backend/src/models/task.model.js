@@ -8,6 +8,11 @@ const taskSchema = new mongoose.Schema({
     description: {
         type: String,
         required: [true, "Task description is required"]
+    },
+    status: {
+        type: String,
+        enum: ["pending", "completed"],
+        default: "pending"
     }
 },{
     timestamps: true
